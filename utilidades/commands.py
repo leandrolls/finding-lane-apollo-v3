@@ -2,6 +2,9 @@ import cv2
 import json
 import requests
 import random
+import roslibpy
+import time
+
 
 def addText(img, radius, direction, deviation, devDirection):
     text = "APOLLO AUTONOMUS VEHICLE"
@@ -24,28 +27,52 @@ def addText(img, radius, direction, deviation, devDirection):
 
     return img
 
-def send_direction(deviation, direcao):
+################## FOR HTTP REQUESTS #####################
+
+""" def send_direction(deviation, direcao):
     print(direcao)
     print(deviation)
-
     dev = (deviation*5)*random.uniform(-1, 1)
-
     path = "lane"
     data = {'pos': dev}
-
-
     print(dev)
+    return post_method(path, data) """
 
-    return post_method(path, data)
-
-def post_method(path, data):
-    data2 = {}
+"""  def post_method(path, data):
     url = "http://192.168.0.100:5000/" + path
-    #url2 = "http://192.168.0.100:5000/controllers/handle-motor"
     headers = {'Content-type': 'application/json', 'Accept': 'application/json'}
     try:
-        #return requests.post(url, data=json.dumps(data), headers=headers)
         requests.post(url, data=json.dumps(data), headers=headers)
-        #requests.post(url2, data=json.dumps(data2), headers=headers)
+    except Exception:
+        print("Http error") """
+
+###########################################################
+
+def connect_ros():
+    client = roslibpy.Ros(host='192.168.0.107', port=9090)
+    try:
+        client.run()
+        print('Is ROS connected?', client.is_connected)
+    except Exception:
+        print("ROS Connection Error")
+        client.terminate()
+    return client
+
+def publish_method(topic, data):
+    ros_topic = roslibpy.Topic(connect_ros(), topic, 'std_msgs/Int16')
+    try:
+        return ros_topic.publish(roslibpy.Message({'data': data}))
     except Exception:
         print("Http error")
+
+def send_lane_controllers(pos):
+    topic = "controllers"
+    data = 55 + int(pos * random.uniform(1.0, 5.0))
+    if data < 41:
+        data = 41
+    elif data > 69:
+        data = 69
+
+    time.sleep(3)
+    print(data)
+    return publish_method(topic, data)

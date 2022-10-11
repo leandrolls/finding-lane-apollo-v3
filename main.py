@@ -71,7 +71,7 @@ while True:
     meanPts, result = ln.draw_lane_lines(frame, thresh, minverse, draw_info)
     deviation, directionDev = ce.offCenter(meanPts, frame)
     finalImg = cd.addText(result, curveRad, curveDir, deviation, directionDev)
-    cd.send_direction(deviation, directionDev)
+    cd.send_lane_controllers(deviation)
 
     cv2.imshow("Apollo Autonomus Vehicle Detection", finalImg)
 
