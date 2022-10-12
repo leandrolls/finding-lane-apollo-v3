@@ -9,6 +9,7 @@ from utilidades import lane as ln
 from utilidades import warp as wp
 
 image = cp.readVideo()
+rosdasdass = cd.connect_ros()
 
 # 1920x1080
 
@@ -71,7 +72,7 @@ while True:
     meanPts, result = ln.draw_lane_lines(frame, thresh, minverse, draw_info)
     deviation, directionDev = ce.offCenter(meanPts, frame)
     finalImg = cd.addText(result, curveRad, curveDir, deviation, directionDev)
-    cd.send_lane_controllers(deviation)
+    cd.send_lane_controllers(rosdasdass, deviation)
 
     cv2.imshow("Apollo Autonomus Vehicle Detection", finalImg)
 

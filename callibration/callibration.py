@@ -8,7 +8,7 @@ def canny(image):
     canny_img = cv2.Canny(blur, 50, 150)
     return canny_img
 
-imag = cv2.imread("f1.jpg")
+imag = cv2.imread("f5.jpg")
 lane_image = np.copy(imag)
 canny_image = canny(lane_image)
 
